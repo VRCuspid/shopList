@@ -1,0 +1,13 @@
+.minus,.plus{
+    display:inline-block;
+    width:20px;
+    height:20px;
+    line-height:20px;
+    text-align: center;
+    border-radius: 50%;
+    color:#fff;
+    background:#f90;
+}
+.num{
+    margin:0 5px;
+}

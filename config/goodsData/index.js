@@ -1,0 +1,34 @@
+const goodsLists = [
+    {
+        productName:'苹果🍎',
+        productPrice:8,
+        id:1,
+        from:'黑龙江',
+        imgUrl:'https://goss.veer.com/creative/vcg/veer/1200/veer-127322426.jpg'
+    },{
+        productName:'螃蟹🦀',
+        productPrice:43,
+        id:2,
+        from:'海南',
+        imgUrl:'https://goss.veer.com/creative/vcg/veer/1200/veer-100742197.jpg'
+    },{
+        productName:'橘子',
+        productPrice:10,
+        id:3,
+        from:'辽宁',
+        imgUrl:'https://goss.veer.com/creative/vcg/veer/1200/veer-129160949.jpg'
+    },{
+        productName:'火龙果',
+        productPrice:13,
+        id:4,
+        from:'沈阳',
+        imgUrl:'https://p.pstatp.com/weili/bl/57414719094532085.jpg'
+    },{
+        productName:'虾',
+        productPrice:32,
+        id:5,
+        from:'海南',
+        imgUrl:'https://tgi1.jia.com/118/669/18669102.jpg'
+    }
+]
+module.exports=goodsLists
