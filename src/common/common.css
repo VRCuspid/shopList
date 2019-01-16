@@ -165,9 +165,7 @@ img {
 input,
 textarea {
     border: none;
-    background: none;
     outline: none;
-    -webkit-appearance: none;
 }
 
 * {

@@ -6,10 +6,16 @@ const noopServiceWorkerMiddleware = require('react-dev-utils/noopServiceWorkerMi
 const ignoredFiles = require('react-dev-utils/ignoredFiles');
 const paths = require('./paths');
 const fs = require('fs');
-
+const query = require('./mysql');
 const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
 const host = process.env.HOST || '0.0.0.0';
-
+const goodsLists=require('./goodsData');
+const axios = require('axios');
+const md5 = require('md5');
+const shopList = require('./shopList')
+const val2md5=(val)=>{
+  return md5(val)
+}
 module.exports = function(proxy, allowedHost) {
   return {
     // WebpackDevServer 2.4.3 introduced a security fix that prevents remote
@@ -88,6 +94,56 @@ module.exports = function(proxy, allowedHost) {
         require(paths.proxySetup)(app);
       }
 
+      app.get('/getShopList',function(req,res){
+        res.json({code:3,msg:shopList})
+      })
+      app.get('/api/login',function(req,res){
+        const {username,password} = req.query
+        query('select * from reactLoginList where name=? and password=?',[username,password],function(err,data){
+          if(err){
+            return res.json({code:0,msg:err})
+          }
+          if(data.length>0){
+            const token=val2md5(new Date().getTime());
+            res.json({code:1,msg:{...data[0],flag:token}})
+                query(`UPDATE reactloginlist SET flag=? WHERE (id=?)`,[token,data[0].id],function(err,data){
+                  if(err){
+                    console.error(err);
+                    return ;
+                  }
+                  console.log(data)
+                })
+          }else{
+            res.json({code:2,msg:'data not founded'})
+          }
+        })
+      })
+      app.get('/getSongList',function(req,res){
+        const url='https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg?tpl=3&page=detail&date=2019-01-08&topid=4&type=top&song_begin=0&song_num=30&g_tk=5381&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq.json&needNewCode=0';
+
+        axios.get(url,{
+          headers:{
+            referer: 'https://y.qq.com/n/yqq/toplist/4.html',
+            origin:'https://y.qq.com'
+          }
+        }).then(re=>{
+          console.log(re)
+          res.json({code:0,data:re.data})
+        }).catch(err=>{
+          res.json({code:1,data:err})
+        })
+      })
+      app.get('/getGoodsLists',function(req,res){
+        res.json({code:0,msg:goodsLists})
+      })
+      app.get('/getDetailData',function(req,res){
+        const id=Number(req.query.id)
+        const arr=goodsLists.filter((item)=>{
+          return item.id===id;
+        })
+        console.log(arr,req.query)
+        res.json({code:0,msg:arr[0]});
+      })
       // This lets us fetch source contents from webpack for the error overlay
       app.use(evalSourceMapMiddleware(server));
       // This lets us open files from the runtime error overlay.
